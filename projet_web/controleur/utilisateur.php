@@ -1,5 +1,5 @@
 <?php
-if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])){
+if(isset($_POST['action'])){
 	switch($_POST['action']){
 		case 'inscription':
 			if(isset($_POST['mot_de_passe']) && isset($_POST['email'])){
@@ -68,7 +68,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])){
 				else{
 					if(isset($_SESSION['user'])){
 						$userId = $_SESSION['user']['id'];
-						$result = array();
 						if($_SESSION['user']['email'] != $email){
 							if(Utilisateur::updateMail(array($email, $_SESSION['user']['id']))){
 								$_SESSION['user']['email'] = $email;
