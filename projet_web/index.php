@@ -27,8 +27,12 @@ function __autoload($classname) {
 	<form method="post" action="controleur/controleur.php">
 		<input type="text" placeholder="Page" name="page">
 		<input type="text" placeholder="Action" name="action">
-		<input type="text" placeholder="email" name="email">
-		<input type="text" placeholder="mot_de_passe" name="mot_de_passe">
+		<input type="text" placeholder="Email" name="email">
+		<input type="text" placeholder="Password" name="mot_de_passe">
+		<input type="text" placeholder="credibilite_min" name="credibilite_min">
+		<input type="text" placeholder="distance_incident" name="distance_incident">
+		<input type="text" placeholder="notifications_actives" name="notifications_actives">
+		<input type="text" placeholder="avatar" name="avatar">
 		<button>Go</button>
 	</form>
 </body>
