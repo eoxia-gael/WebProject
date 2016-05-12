@@ -1,32 +1,58 @@
 <?php
-require_once('DBUtils.php');
-
+require_once('DBUtil.php');
 class Utilisateur{
-	private static $dbUtils;
-	public $id;
-	public $pseudo;
-	public $mot_de_passe;
-	public $email;
-	public $avatar;
-	public $parametres_utilisateur_id;
-	
-	function __construct($pseudo, $mot_de_passe, $email, $avatar, $parametres_utilisateur_id){
-		self::$dbUtils = new DBUtils('utilisateurs', 'Utilisateur', array('pseudo', 'mot_de_passe', 'email', 'avatar', 'parametres_utilisateur_id'));
-		$this->pseudo = $pseudo;
-		$this->mot_de_passe = $mot_de_passe;
-		$this->email = $email;
-		$this->avatar = $avatar;
-		$this->parametres_utilisateur_id = $parametres_utilisateur_id;
-	}
-	
-	public function save(){
-		$dataArray = array($this->pseudo, $this->mot_de_passe, $this->email, $this->avatar, $this->parametres_utilisateur_id);
-		$this->id = self::$dbUtils->save($dataArray);
-	}
-
 	public static function load($userId){
-		$row = self::$dbUtils->load($userId);
-		
+		$pdo = DBUtil::getConnection();
+		$request = $pdo->prepare('select * from utilisateurs where id = ?');
+		$request->execute(array($userId));
+		$row = $request->fetch();
 		return $row;
+	}
+	
+	public static function loadByEmail($email){
+		$pdo = DBUtil::getConnection();
+		$request = $pdo->prepare('select * from utilisateurs where email = ?');
+		$request->execute(array($email));
+		$row = $request->fetch();
+		return $row;
+	}
+	
+	public static function checkConnection($dataArray){
+		$pdo = DBUtil::getConnection();
+		$request = $pdo->prepare('select * from utilisateurs where email = ? and mot_de_passe = ?');
+		$request->execute($dataArray);
+		$row = $request->fetch();
+		return $row;
+	}
+	
+	public static function save($dataArray){
+		$pdo = DBUtil::getConnection();
+		$request = $pdo->prepare('insert into utilisateurs values(null, ?, ?, ?)');
+		$request->execute($dataArray);
+		return $pdo->lastInsertId();
+	}
+	
+	public static function updateMail($dataArray){
+		try{
+			$pdo = DBUtil::getConnection();
+			$request = $pdo->prepare('update utilisateurs set email = ? where id = ?');
+			$request->execute($dataArray);
+			return true;
+		}
+		catch(Exception $e){
+			return false;
+		}
+	}
+	
+	public static function updatePassword($dataArray){
+		try{
+			$pdo = DBUtil::getConnection();
+			$request = $pdo->prepare('update utilisateurs set mot_de_passe = ? where id = ?');
+			$request->execute($dataArray);
+			return true;
+		}
+		catch(Exception $e){
+			return false;
+		}
 	}
 }
