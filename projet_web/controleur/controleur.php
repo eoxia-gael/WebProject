@@ -13,6 +13,9 @@
 			case 'utilisateur_settings':
 				require_once('utilisateurSettings.php');
 				break;
+			case 'incident':
+				require_once('incident.php');
+				break;
 		}
 		
 		echo json_encode($result);
