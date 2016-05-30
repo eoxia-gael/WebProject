@@ -465,7 +465,24 @@
 				<a id="panelSignup" href="#signup-page" class="ui-shadow ui-btn ui-corner-all submit-1" data-role="button" role="button">Signup</a>
 			</div>
 			<div data-role="panel" id="panelEvent" data-display="overlay" class="panels">
-				<h2>Event</h2> 
+				<h2>Event</h2>
+					<fieldset data-role="controlgroup">
+						<?php
+						$data = http_build_query(array('page' => 'type_incident', 'action' => 'findAll'));
+						$options = array( 'http' => array( 'header'  => "Content-type: application/x-www-form-urlencoded\r\n" . "Content-Length: " . strlen( $data ) . "\r\n", 'method'  => "POST", 'content' => $data ) );
+						$url = 'http' . ((isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ? 's' : '') . '://' . $_SERVER["SERVER_NAME"] . (($_SERVER["SERVER_PORT"] != "80") ? ':' . $_SERVER["SERVER_PORT"] : '') . ((substr($_SERVER['REQUEST_URI'], -1) == '/') ? dirname($_SERVER['REQUEST_URI']) : dirname(dirname($_SERVER['REQUEST_URI'])));
+						$context = stream_context_create($options);
+						$request = fopen($url . '/projet_web/controleur/controleur.php', 'r', false, $context);
+						$response = json_decode( stream_get_contents( $request ) );
+						if ($response->success) {
+							foreach($response->data as $event_type) {
+						?>
+						<input type="radio" name="event-choice" id="event-choice-<?php echo $event_type->id; ?>" value="<?php echo $event_type->id; ?>">
+						<label for="event-choice-<?php echo $event_type->id; ?>"><?php echo $event_type->nom; ?></label>
+						<?php } } ?>
+						<input type="radio" name="event-choice" id="event-choice-custom" value="custom_message" checked="checked">
+						<label for="event-choice-custom"><textarea placeholder="Your custom mesage here..."></textarea></label>
+					</fieldset>
 				<button id="logout" class="ui-shadow ui-btn ui-corner-all submit-1">Logout</button>
 			</div>
 			<div data-role="header" data-theme="a" id="map-header">
