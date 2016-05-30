@@ -67,7 +67,7 @@ function initMap() {
       fillOpacity: 0.35,
       map: map,
       center: map.getCenter().toJSON(),
-      radius: google.maps.geometry.spherical.computeDistanceBetween( map.getCenter(), map.getBounds().getNorthEast())
+      radius: google.maps.geometry.spherical.computeDistanceBetween( map.getCenter(), map.getBounds().getNorthEast() )
     });
     center.setOptions({
     position: map.getCenter().toJSON(),

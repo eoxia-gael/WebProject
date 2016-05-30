@@ -13,17 +13,17 @@
 			#map-page {
 				height: 100%;
 			}
-			#panelLogin {
-				background: #e9e9e9;
+			.panels {
+				background: #e9e9e9 !important;
 			}
-			#panelLogin h2 {
+			.panels h2 {
 				margin: 0;
 				color: #666;
 				padding-bottom: 15px;
 				border-bottom: 1px solid #ccc;
 				margin-bottom: 25px;
 			}
-			#panelLogin {
+			.panels {
 				color: #666;
 				margin: 0;
 			}
@@ -42,6 +42,15 @@
 				top: auto !important;
 				margin: 1em;
 				width: 13em;
+			}
+			#panelEvent #logout {
+				color: #666;
+				left: 0;
+				bottom: 0;
+				position: absolute !important;
+				top: auto !important;
+				margin: 1em;
+				width: 15em;
 			}
 
 			#login-page, #signup-page {
@@ -76,10 +85,10 @@
 			#login-page #form-login .submit-1, #signup-page #form-signup  .submit-1 {
 				margin-top: 30px;
 			}
-			#signup-page #form-signup #notifications_signup {
+			#panelLogin #notifications_login, #signup-page #form-signup #notifications_signup {
 				padding: 0;
 			}
-			#signup-page #form-signup #notifications_signup li {
+			#panelLogin #notifications_login li, #signup-page #form-signup #notifications_signup li {
 				color : red;
 				list-style-type: none;
 				text-align: center;
@@ -126,6 +135,7 @@
 			CenterControl.prototype.center_ = null;
 			CenterControl.prototype.geoLocMarker_ = null;
 			CenterControl.prototype.followCenter_ = true;
+			CenterControl.prototype.view_distance_ = null;
 			CenterControl.prototype.getCenter = function() {
 				return this.center_;
 			};
@@ -194,7 +204,7 @@
 				btn.className = 'ui-btn ui-corner-all ui-shadow';
 				//btn.style.color = '#0099FF';
 				btn.style.margin = '1em';
-				btn.href = '#panelLogin';
+				btn.href = panel;
 				btn.innerHTML = 'Event';
 				btn.addEventListener('click', function() {
 					markerControlDiv_.addMarker(centerControl.center_.lat,centerControl.center_.lng,markerControlDiv_.markerControlDiv());
@@ -363,6 +373,9 @@
 					disableDefaultUI: true
 				});
 				markerControl = new MarkerControl([]);
+				map.addListener('zoom_changed', function() {
+					markerControl.view_distance_ = google.maps.geometry.spherical.computeDistanceBetween( map.getCenter(), map.getBounds().getNorthEast() );
+				});
 			}
 			function refreshMap() {
 				if(!init) {
@@ -378,7 +391,12 @@
 			var markerControl;
 			var init = false;
 
+
+
+
 			/* Action jQuery mobile */
+			var user = {email: '', password: ''};
+			var panel = '#panelLogin';
 			jQuery(document).on("pageshow","#map-page",function() {
 				refreshMap();
 			});
@@ -391,7 +409,6 @@
 					'mot_de_passe': jQuery("#password_signup").val(),
 				};
 				jQuery.post(window.location.pathname+'../projet_web/controleur/controleur.php', data, function(response) {
-					console.log(response);
 					if (response.success) {
 						jQuery.mobile.changePage("#map-page");
 					} else {
@@ -406,23 +423,53 @@
 					}
 				}, 'JSON');
 			});
+			jQuery(document).on("click","#login_submit",function(event) {
+				event.preventDefault();
+				var data = {
+					'page': 'utilisateur',
+					'action': 'connexion',
+					'email': jQuery("#email_login").val(),
+					'mot_de_passe': jQuery("#password_login").val(),
+				};
+				jQuery.post(window.location.pathname+'../projet_web/controleur/controleur.php', data, function(response) {
+					if (response.success) {
+						jQuery.mobile.changePage("#map-page");
+						user.email = data.email;
+						user.password = data.mot_de_passe;
+						panel = '#panelEvent';
+						jQuery("#open_menu").attr("href", panel);
+						jQuery("#eventBtn").attr("href", panel);
+						jQuery("#panelLogin[data-role=panel]").panel("close");
+					} else {
+						for (i = 0; i < response.errors.length; i++) {
+							var li = document.createElement("li");
+							var notif = Math.random().toString(36).substr(2, 10);
+							li.id = notif;
+							li.appendChild(document.createTextNode(response.errors[i]));
+							jQuery("#notifications_login").append(li);
+							setTimeout(function(){jQuery("#"+notif).hide(1000);setTimeout(function(){jQuery("#"+notif).remove();}, 1000)}, 5000);
+						}
+					}
+				}, 'JSON');
+			});
 		</script>
 	</head>
 	<body>
 		<div data-role="page" id="map-page" data-url="map-page">
-			<div data-role="panel" id="panelLogin" data-display="overlay">
+			<div data-role="panel" id="panelLogin" data-display="overlay" class="panels">
 				<h2>Login</h2>
-				<input type="text" name="text-basic" id="text-basic" value="" placeholder="Email">
-				<input type="password" name="password" id="password" value="" autocomplete="off" placeholder="Password">
-				<a href="#" class="ui-shadow ui-btn ui-corner-all submit-1" data-role="button" role="button">Connect</a>
+				<input type="text" name="text-basic" id="email_login" value="" placeholder="Email">
+				<input type="password" name="password" id="password_login" value="" autocomplete="off" placeholder="Password">
+				<a href="#" class="ui-shadow ui-btn ui-corner-all submit-1" id="login_submit" data-role="button" role="button">Connect</a>
+				<ul id="notifications_login"></ul>
 				<a id="panelSignup" href="#signup-page" class="ui-shadow ui-btn ui-corner-all submit-1" data-role="button" role="button">Signup</a>
-			</div><!--
-			<div data-role="panelEvent" id="dashboard" data-display="overlay">
+			</div>
+			<div data-role="panel" id="panelEvent" data-display="overlay" class="panels">
 				<h2>Event</h2> 
-				<a id="sendEvent" href="#signup-page" class="ui-shadow ui-btn ui-corner-all submit-1" data-role="button" role="button">Signup</a>
-			</div> -->
+				<button id="logout" class="ui-shadow ui-btn ui-corner-all submit-1">Logout</button>
+			</div>
 			<div data-role="header" data-theme="a" id="map-header">
-				<a href="#panelLogin" class="ui-btn ui-icon-bars ui-btn-icon-notext ui-corner-all"></a><h1>Maps</h1><button id="centerMap" class="ui-btn ui-shadow">Follow</button>
+				<a href="#panelLogin" id="open_menu" class="ui-btn ui-icon-bars ui-btn-icon-notext ui-corner-all"></a><h1>Maps</h1><button id="centerMap" class="ui-btn ui-shadow">Follow</button>
 			</div>
 			<div role="main" class="ui-content" id="map-canvas"></div>
 		</div>
