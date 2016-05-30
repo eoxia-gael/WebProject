@@ -1,6 +1,6 @@
 <?php
-if(isset($_GET['action'])){
-	switch($_GET['action']){
+if(isset($_POST['action'])){
+	switch($_POST['action']){
 		case 'findAll':
 			if(isset($_SESSION['user'])){
 				$result['success'] = true;

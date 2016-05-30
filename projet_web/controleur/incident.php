@@ -33,10 +33,6 @@ if(isset($_POST['action'])){
 				}
 			}
 			break;
-	}
-}
-if(isset($_GET['action'])){
-	switch($_GET['action']){
 		case 'findInArea':
 			if(isset($_POST['latitude']) && isset($_POST['longitude']) && isset($_POST['rayon'])){
 				$latitude = $_POST['latitude'];
