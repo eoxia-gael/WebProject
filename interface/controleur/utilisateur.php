@@ -88,7 +88,7 @@ if(isset($_POST['action'])){
 				}
 			}
 			break;
-		case 'deconnection':
+		case 'logout':
 			session_unset();
 			session_destroy();
 			$result['success'] = true;

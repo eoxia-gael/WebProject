@@ -408,7 +408,7 @@
 					'email': jQuery("#email_signup").val(),
 					'mot_de_passe': jQuery("#password_signup").val(),
 				};
-				jQuery.post(window.location.pathname+'../projet_web/controleur/controleur.php', data, function(response) {
+				jQuery.post(window.location.pathname+'/controleur/controleur.php', data, function(response) {
 					if (response.success) {
 						jQuery.mobile.changePage("#map-page");
 					} else {
@@ -431,7 +431,7 @@
 					'email': jQuery("#email_login").val(),
 					'mot_de_passe': jQuery("#password_login").val(),
 				};
-				jQuery.post(window.location.pathname+'../projet_web/controleur/controleur.php', data, function(response) {
+				jQuery.post(window.location.pathname+'/controleur/controleur.php', data, function(response) {
 					if (response.success) {
 						jQuery.mobile.changePage("#map-page");
 						user.email = data.email;
@@ -449,6 +449,22 @@
 							jQuery("#notifications_login").append(li);
 							setTimeout(function(){jQuery("#"+notif).hide(1000);setTimeout(function(){jQuery("#"+notif).remove();}, 1000)}, 5000);
 						}
+					}
+				}, 'JSON');
+			});
+			jQuery(document).on("click","#logout",function(event) {
+				event.preventDefault();
+				var data = {
+					'page': 'utilisateur',
+					'action': 'logout'
+				};
+				jQuery.post(window.location.pathname+'/controleur/controleur.php', data, function(response) {
+					if (response.success) {
+						jQuery.mobile.changePage("#map-page");
+						panel = '#panelLogin';
+						jQuery("#open_menu").attr("href", panel);
+						jQuery("#eventBtn").attr("href", panel);
+						jQuery("#panelEvent[data-role=panel]").panel("close");
 					}
 				}, 'JSON');
 			});
@@ -472,7 +488,7 @@
 						$options = array( 'http' => array( 'header'  => "Content-type: application/x-www-form-urlencoded\r\n" . "Content-Length: " . strlen( $data ) . "\r\n", 'method'  => "POST", 'content' => $data ) );
 						$url = 'http' . ((isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ? 's' : '') . '://' . $_SERVER["SERVER_NAME"] . (($_SERVER["SERVER_PORT"] != "80") ? ':' . $_SERVER["SERVER_PORT"] : '') . ((substr($_SERVER['REQUEST_URI'], -1) == '/') ? dirname($_SERVER['REQUEST_URI']) : dirname(dirname($_SERVER['REQUEST_URI'])));
 						$context = stream_context_create($options);
-						$request = fopen($url . '/projet_web/controleur/controleur.php', 'r', false, $context);
+						$request = fopen($url . '/interface/controleur/controleur.php', 'r', false, $context);
 						$response = json_decode( stream_get_contents( $request ) );
 						if ($response->success) {
 							foreach($response->data as $event_type) {
