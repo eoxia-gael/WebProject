@@ -1,8 +1,12 @@
 <?php
-	session_start();
-	require_once('../modele/TypeIncident.php');
+	error_reporting(E_ALL);
+	ini_set('display_errors', 1);
+	if (isset($_REQUEST['token'])) { session_id($_REQUEST['token']); session_start(); }
+	require_once('../modele/TypeIncident.php'); 
 	require_once('../modele/Utilisateur.php');
 	require_once('../modele/UtilisateurSettings.php');
+	require_once('../modele/UtilisateursIncidents.php');
+	require_once('../modele/Incident.php');
 	if(isset($_POST['page'])){
 		$page = $_POST['page'];
 		$result = array('success' => false, 'errors' => array());

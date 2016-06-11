@@ -1,0 +1,88 @@
+#map-page, #map-canvas {
+	width: 100%;
+	height: calc(100% - 44px);
+	padding: 0;
+}
+#map-page {
+	height: 100%;
+}
+.panels {
+	background: #e9e9e9 !important;
+}
+.panels h2 {
+	margin: 0;
+	color: #666;
+	padding-bottom: 15px;
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 25px;
+}
+.panels {
+	color: #666;
+	margin: 0;
+}
+#panelLogin .ui-input-text {
+	font-size: 20px;
+}
+#panelLogin .submit-1 {
+	color: #666;
+	margin-top: 20px;
+}
+#panelLogin #panelSignup {
+	color: #666;
+	left: 0;
+	bottom: 0;
+	position: absolute !important;
+	top: auto !important;
+	margin: 1em;
+	width: 13em;
+}
+#panelEvent #logout {
+	color: #666;
+	left: 0;
+	bottom: 0;
+	position: absolute !important;
+	top: auto !important;
+	margin: 1em;
+	width: 15em;
+}
+
+#login-page, #signup-page {
+	background: #e9e9e9;
+	margin: 0;
+	padding: 0;
+}
+#login-page .backBtn, #signup-page .backBtn {
+	margin: 20px;
+}
+#login-page .signupBtn {
+	float: right;
+	margin: 15px;
+}
+#login-page #form-login, #signup-page #form-signup {
+	width: 320px;
+	margin: auto;
+	margin-top: 10%;
+	height: 100%;
+	vertical-align: middle;
+}
+#login-page #form-login h1, #signup-page #form-signup h1 {
+	text-align: center;
+	margin: 0;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 30px;
+}
+#login-page #form-login .ui-input-text, #signup-page #form-signup .ui-input-text {
+	font-size: 25px;
+}
+#login-page #form-login .submit-1, #signup-page #form-signup  .submit-1 {
+	margin-top: 30px;
+}
+#panelLogin #notifications_login, #signup-page #form-signup #notifications_signup, #panelEvent #notifications_event {
+	padding: 0;
+}
+#panelLogin #notifications_login li, #panelEvent #notifications_event li, #signup-page #form-signup #notifications_signup li {
+	color : red;
+	list-style-type: none;
+	text-align: center;
+}

@@ -2,12 +2,12 @@
 if(isset($_POST['action'])){
 	switch($_POST['action']){
 		case 'save':
-			if(isset($_POST['custom_incident']) && isset($_POST['latitude']) && isset($_POST['longitude']) && isset($_POST['type_incident_id']) && isset($_POST['commentaire'])){
+			if(isset($_POST['latitude']) && isset($_POST['longitude'])){
 				$customIncident = $_POST['custom_incident'];
 				$latitude = $_POST['latitude'];
 				$longitude = $_POST['longitude'];
-				$typeIncidentId = $_POST['type_incident_id'];
-				$commentaire = $_POST['commentaire'];
+				$typeIncidentId = (isset($_POST['type_incident_id']) && $_POST['type_incident_id'] != '') ? $_POST['type_incident_id'] : null;
+				$commentaire = (isset($_POST['commentaire'])) ? $_POST['commentaire'] : '';
 				
 				if($latitude == ''){
 					$result['errors'][] = 'La latitude est vide';
@@ -21,9 +21,25 @@ if(isset($_POST['action'])){
 				else{
 					if(isset($_SESSION['user'])){
 						$userId = $_SESSION['user']['id'];
-						if(Incident::isReported($latitude, $longitude, $typeIncidentId)){
-							if(Incident::save(array($customIncident, $latitude, $longitude, $typeIncidentId, $commentaire)){
+						if($idIncident = Incident::isReported($latitude, $longitude, $typeIncidentId)){
+							if(UtilisateursIncidents::save(array($userId, $idIncident, $commentaire))){
 								$result['success'] = true;
+							}
+							else{
+								$result['errors'][] = 'Incident déjà reporté par l\'utilisateur';
+							}
+						}
+						else{
+							if($idIncident = Incident::save(array($customIncident, $latitude, $longitude, $typeIncidentId))){
+								if(UtilisateursIncidents::save(array($userId, $idIncident, $commentaire))){
+									$result['success'] = true;
+								}
+								else{
+									$result['errors'][] = 'Error lors de l\'insertion d\'un UtilisateurIncident';
+								}
+							}
+							else{
+								$result['errors'][] = 'Error lors de l\'insertion d\'un incident';
 							}
 						}
 					}
@@ -31,6 +47,9 @@ if(isset($_POST['action'])){
 						$result['errors'][] = 'Non connecté';
 					}
 				}
+			}
+			else{
+				$result['errors'][] = 'Latitude ou longitude not set';
 			}
 			break;
 		case 'findInArea':

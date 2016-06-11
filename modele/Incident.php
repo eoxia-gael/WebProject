@@ -1,9 +1,12 @@
 <?php
+error_reporting(E_ALL);
+	ini_set('display_errors', 1);
+	
 require_once('DBUtil.php');
 class Incident{
 	public static function save($dataArray){
 		$pdo = DBUtil::getConnection();
-		$request = $pdo->prepare('insert into incidents values(null, ?, ?, ?, ?, ?)');
+		$request = $pdo->prepare('insert into incidents values(null, ?, ?, ?, ?)');
 		$request->execute($dataArray);
 		return $pdo->lastInsertId();
 	}
@@ -15,14 +18,14 @@ class Incident{
 		$request->bindParam(':latitude', $latitude);
 		$request->bindParam(':longitude', $longitude);
 		$request->execute();
-		return $requst->fetchAll();
+		return $request->fetchAll();
 	}
 	
 	public static function isReported($latitude, $longitude, $typeIncidentId){
 		$listIncidents = self::findInArea(100, $latitude, $longitude);
 		foreach($listIncidents as $incident){
 			if($incident['type_incident_id'] == $typeIncidentId){
-				return true;
+				return $incident['id'];
 			}
 		}
 		

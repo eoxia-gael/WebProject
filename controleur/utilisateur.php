@@ -21,6 +21,11 @@ if(isset($_POST['action'])){
 						$dataArray = array(sha1($motDePasse), $email, $settingsId);
 						Utilisateur::save($dataArray);
 						$result['success'] = true;
+						ini_set('session.gc_maxlifetime', 3600 * 24 * 365 * 10);
+						$result['data']['token'] = md5($email.'_privateKeyForEncription');
+						session_id($result['data']['token']);
+						session_start();
+						$_SESSION['user'] = $user;
 					}
 					else{
 						$result['errors'][] = 'Email déjà existant';
@@ -43,6 +48,10 @@ if(isset($_POST['action'])){
 					$result['errors'][] = 'Email non valide';
 				}
 				else if($user = Utilisateur::checkConnection(array($email, sha1($motDePasse)))){
+					ini_set('session.gc_maxlifetime', 3600 * 24 * 365 * 10);
+					$result['data']['token'] = md5($email.'_privateKeyForEncription');
+					session_id($result['data']['token']);
+					session_start();
 					$_SESSION['user'] = $user;
 					$result['success'] = true;
 				}

@@ -6,7 +6,7 @@ class DBUtil{
 	public static function getConnection(){
 		if(!isset(self::$pdo)){
 			$host = 'localhost';
-			$db = 'projet_web';
+			$db = 'gaudy-falentin';
 			$login = 'root';
 			$password = '';
 			$params = array();
